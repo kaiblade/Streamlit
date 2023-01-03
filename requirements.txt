@@ -7,3 +7,4 @@ python-dotenv==0.21.0
 requests==2.28.1
 streamlit==1.16.0
 streamlit_option_menu==0.3.2
+streamlit_server_state==0.15.0

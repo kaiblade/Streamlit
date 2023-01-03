@@ -13,6 +13,7 @@ from millify import millify
 import dotenv
 from dotenv import load_dotenv
 from PIL import Image
+from streamlit_server_state import server_state, server_state_lock
 
 
 
@@ -46,8 +47,8 @@ def image_fetch(image, caption,link):
     st.text("")
 
 def luna_info():
-    key=os.environ.get('CMC_API_KEY')
-    url = f'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'
+    key=st.secrets['CMC_API_KEY']
+    url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'
     headers = {
         'Accepts': 'application/json',
         'X-CMC_PRO_API_KEY': key,
@@ -68,15 +69,13 @@ def luna_info():
         cir_supply = data['data']['LUNA']['circulating_supply']
         tot_supply = data['data']['LUNA']['total_supply']
         price = data['data']['LUNA']['quote']['USD']['price']
-        dotenv_file = dotenv.find_dotenv()
-        os.environ['LATEST_PRICE'] = str(price)
-        dotenv.set_key(dotenv_file,'LATEST_PRICE', os.environ['LATEST_PRICE'])
+        server_state.price=price
 
     except (ConnectionError, Timeout, TooManyRedirects,ReadTimeout) as e:             
         print(e)
         cir_supply=127475474.310907
         tot_supply=1004262701
-        price = os.environ.get('LATEST_PRICE')
+        price =  server_state.price
 
     return cir_supply, tot_supply,price
 
@@ -112,6 +111,7 @@ def bar_charts(url, x, y,title,sql,z=None):
     
 
     if 'Rewards' in title:
+        print(luna_info()[2])
         df[y] = df[y]*float(luna_info()[2])
         if 'Total' in title:
             return df[y].sum()
@@ -122,7 +122,7 @@ def bar_charts(url, x, y,title,sql,z=None):
     st.markdown(f'[{title}]({sql})', unsafe_allow_html=True)
 
     df[x] = pd.to_datetime(df[x])
-    # df[x] = pd.to_datetime(df[x], format = '%d %b, %Y')
+   
 
     if not z:
         alt_chart = alt.Chart(df)\
