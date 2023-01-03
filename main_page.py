@@ -268,7 +268,8 @@ if selected == "Developments":
     
 if selected == "Supply":
 
-    st.text_area('','''This section consists of the following visualizations:\n1)\. Average Transaction Fee per Transaction per Week''')
+    st.text_area('','''The following _visualizations_ would be shown in this section::\n1)\. 
+    Average Transaction Fee per Transaction per Week''')
 
     col1,col2,col3,col4=st.columns(4)
     circulating, total = luna_info()[0:2]
