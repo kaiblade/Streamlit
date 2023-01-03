@@ -8,10 +8,7 @@ import altair as alt
 from requests.exceptions import ConnectionError, Timeout, TooManyRedirects,ReadTimeout
 import json
 import os
-# import pprint
 from millify import millify
-import dotenv
-from dotenv import load_dotenv
 from PIL import Image
 from streamlit_server_state import server_state, server_state_lock
 
