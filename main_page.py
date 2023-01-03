@@ -268,7 +268,7 @@ if selected == "Developments":
     
 if selected == "Supply":
 
-    st.text_area('','''The following visualizations would be shown in this section:
+    st.text_area(value='''The following visualizations would be shown in this section:
 
     A counter displaying the Total IB Tokens Paid so far to users.
     A counter displaying the Average IB Tokens Paid.
