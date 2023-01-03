@@ -268,13 +268,13 @@ if selected == "Developments":
     
 if selected == "Supply":
 
-    st.text_area('', '''The following visualizations would be shown in this section:
+    # md =st.text_area('', , label_visibility="collapsed")
 
-    A counter displaying the Total IB Tokens Paid so far to users.
-    A counter displaying the Average IB Tokens Paid.
-    A counter displaying the Total Wallets Paid IB Tokens so far.
-    A bar chart displaying the IB Tokens Paid Per Day along with a line chart that shows the Cumulative Paid IB tokens since the beginning of the liquidity program to date.
-''', label_visibility="collapsed")
+    st.markdown("The following visualizations would be shown in this section:\
+    A counter displaying the Total IB Tokens Paid so far to users.\
+    A counter displaying the Average IB Tokens Paid.\
+    A counter displaying the Total Wallets Paid IB Tokens so far.\
+    A bar chart displaying the IB Tokens Paid Per Day along with a line chart that shows the Cumulative Paid IB tokens since the beginning of the liquidity program to date")
 
     col1,col2,col3,col4=st.columns(4)
     circulating, total = luna_info()[0:2]
