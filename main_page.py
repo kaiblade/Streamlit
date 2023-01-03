@@ -14,9 +14,6 @@ from streamlit_server_state import server_state, server_state_lock
 
 
 
-load_dotenv()
-
-
 def luna_data(url, label, sql):
     response = requests.get(url)
     
