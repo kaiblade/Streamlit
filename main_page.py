@@ -272,8 +272,8 @@ if selected == "Wallets":
         "Weeks", "Cumulative Number of New Wallets", "Cumulative Number of New Wallets over Time","https://app.flipsidecrypto.com/velocity/queries/8a394356-836b-4be1-ad41-998942010002")
     
 if selected == "Developments":
-
-    with open('developments.md', 'r', encoding='utf-8-sig') as f:
+    
+    with open('wallets.md', 'r', encoding='utf-8-sig') as f:
         st.markdown(f.read())
 
     bar_charts("https://node-api.flipsidecrypto.com/api/v2/queries/e7aa3c9c-20f1-4f80-b5a7-758c2c5d4cc2/data/latest",
