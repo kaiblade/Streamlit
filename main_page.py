@@ -235,8 +235,7 @@ with col2:
     st.title("Terradash, Part 4: Bringing It All Together")
 
 st.text("")
-with open('info.md', 'r', encoding='utf-8-sig') as f:
-        st.markdown(f.read())
+st.markdown("- Dashboard Github link: https://github.com/kaiblade/Streamlit")
 st.text("")
 selected = option_menu(
         menu_title=None,  
