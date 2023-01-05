@@ -2,7 +2,7 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 import pandas as pd
 import requests
-from requests import Request, Session
+from requests import Session
 import plotly.express as px
 import altair as alt
 from requests.exceptions import ConnectionError, Timeout, TooManyRedirects,ReadTimeout
@@ -10,7 +10,6 @@ import json
 import os
 from millify import millify
 from PIL import Image
-import matplotlib.pyplot as plt
 from streamlit_server_state import server_state, server_state_lock
 
 
