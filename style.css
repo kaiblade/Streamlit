@@ -8,14 +8,15 @@ div[data-testid="metric-container"] {
 
 
 /* Hide hamburger menu and footer */
-/* div[data-testid="stToolbar"] {
+
+div[data-testid="stToolbar"] {
     display: none;
-  } */
+}
   
 footer.css-2ykyy6.egzxvld0 {
 display: none;
 }
-  
-  /* footer.css-z3au9t.egzxvld1 {
+
+footer.css-k9t1y1.egzxvld0 {
     display: none;
-  } */
+}

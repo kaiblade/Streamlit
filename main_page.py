@@ -10,6 +10,7 @@ import json
 import os
 from millify import millify
 from PIL import Image
+import matplotlib.pyplot as plt
 from streamlit_server_state import server_state, server_state_lock
 
 
@@ -124,7 +125,7 @@ def bar_charts(url, x, y,title,sql,z=None):
         alt_chart = alt.Chart(df)\
         .mark_bar()\
         .encode(
-        x=x,
+        x=alt.X(x, type = "temporal", axis=alt.Axis(format="%b %d, %Y")),
         y=y
         ).properties(
         width='container',
@@ -134,7 +135,7 @@ def bar_charts(url, x, y,title,sql,z=None):
         alt_chart = alt.Chart(df)\
         .mark_bar()\
         .encode(
-        x=x,
+        x=alt.X(x, type = "temporal", axis=alt.Axis(format="%b %d, %Y")),
         y=y,
         color=z,
         ).properties(
@@ -166,10 +167,9 @@ def line_charts(url, x, y, title,sql):
     alt_chart = alt.Chart(df)\
     .mark_line()\
     .encode(
-    x=x,
+    x=alt.X(x, type = "temporal", axis=alt.Axis(format="%b %d, %Y")),
     y=y
-    # href='url:N',
-    # tooltip = ['Name', 'url']
+
     ).properties(
     width='container',
     height=500,
@@ -194,17 +194,36 @@ def donuts(url,x,y,title,sql):
         response = None
 
     df=pd.DataFrame.from_records(response_json)
+    df[x]=df[x].apply(lambda col: f'{col[0:18]}...' if len(col) > 21 else col)
 
-    alt_chart=alt.Chart(df)\
-    .encode(
-    theta=alt.Theta(field=y,type="quantitative", stack= True),
-    color=alt.Color(field=x, type="nominal"))
+  
+    fig = px.pie(df[x], values = df[y], hole = 0.55,
+        names = df[x],
+    )
+
+    fig.update_layout(
+        autosize=True,
+        width=300,
+        height=300,
+        showlegend=True, margin={"l":0,"r":5,"t":0,"b":0}
+    )
+
+    fig.update_traces(
+        hoverinfo='label+percent',
+        textinfo='percent', textfont_size=14)
+
+    st.plotly_chart(fig, theme=None, use_container_width=True)
+
+    # alt_chart=alt.Chart(df)\
+    # .encode(
+    # theta=alt.Theta(field=y,type="quantitative", stack= True),
+    # color=alt.Color(field=x, type="nominal"))
     
-    pie = alt_chart.mark_arc(outerRadius=160, innerRadius=120)
-    alt_text = alt_chart.mark_text(radius=130, size=12).encode()
+    # pie = alt_chart.mark_arc(outerRadius=160, innerRadius=120)
+    # alt_text = alt_chart.mark_text(radius=130, size=12).encode()
     
 
-    st.altair_chart(pie + alt_text, theme = 'streamlit', use_container_width=True)
+    # st.altair_chart(pie + alt_text, theme = 'streamlit', use_container_width=True)
 
 
 st.set_page_config(page_title=None, page_icon=None, layout="wide", initial_sidebar_state="auto", menu_items=None)
@@ -217,13 +236,15 @@ with col2:
     st.title("Terradash, Part 4: Bringing It All Together")
 
 st.text("")
+with open('info.md', 'r', encoding='utf-8-sig') as f:
+        st.markdown(f.read())
 st.text("")
 selected = option_menu(
-        menu_title=None,  # required
-        options=["Transactions", "Wallets", "Developments", "Supply"],  # required
-        icons=["file-ruled", "wallet", "code", "file-plus"],  # optional
-        menu_icon="cast",  # optional
-        default_index=0,  # optional
+        menu_title=None,  
+        options=["Transactions", "Wallets", "Developments", "Supply"],  
+        icons=["file-ruled", "wallet", "code", "file-plus"],  
+        menu_icon="cast",  
+        default_index=0, 
         orientation="horizontal",
     )
 
@@ -273,22 +294,39 @@ if selected == "Wallets":
     
 if selected == "Developments":
     
-    with open('wallets.md', 'r', encoding='utf-8-sig') as f:
+    with open('developments.md', 'r', encoding='utf-8-sig') as f:
         st.markdown(f.read())
 
     bar_charts("https://node-api.flipsidecrypto.com/api/v2/queries/e7aa3c9c-20f1-4f80-b5a7-758c2c5d4cc2/data/latest",
     "Weeks", "Number of New Contracts Deployed", "New Contracts Deployed each Week","https://app.flipsidecrypto.com/velocity/queries/e7aa3c9c-20f1-4f80-b5a7-758c2c5d4cc2")
+    
     st.markdown("___")
     st.text("")
     
     line_charts("https://node-api.flipsidecrypto.com/api/v2/queries/c505653e-3e3a-4c67-928f-df2ecc9b4397/data/latest",
     "Weeks", "Cumulative Contracts Deployed", "Total Contracts Deployed each Week", "https://app.flipsidecrypto.com/velocity/queries/c505653e-3e3a-4c67-928f-df2ecc9b4397")
+
+    # st.markdown("___")
+    # st.text("")
+
+    bar_charts("https://node-api.flipsidecrypto.com/api/v2/queries/5b9a936a-f3c2-4dd9-96fa-08501ec326ed/data/latest",
+    "Weeks","Number of Unique Contracts Used", "Number of Unique Contracts Used each Week", "https://app.flipsidecrypto.com/velocity/queries/5b9a936a-f3c2-4dd9-96fa-08501ec326ed")
     
+    st.markdown("---")
+    st.text("")
+    don1, don2 = st.columns(2)
+    with don1:
+        donuts("https://node-api.flipsidecrypto.com/api/v2/queries/6c588eaf-eaf0-43a5-b483-ea1afb61b218/data/latest",
+        "Contract Types", "Number of Contract Calls", "Contract Usage Distribution Grouped By Contract Types", "https://app.flipsidecrypto.com/velocity/queries/6c588eaf-eaf0-43a5-b483-ea1afb61b218")
+
+    with don2:
+        donuts("https://node-api.flipsidecrypto.com/api/v2/queries/a15e7804-4ed9-4a64-b67c-a18c6bf445fa/data/latest",
+    "Project Names","Number of Contract Calls","Top 10 Most Popular Contracts", "https://app.flipsidecrypto.com/velocity/queries/a15e7804-4ed9-4a64-b67c-a18c6bf445fa")
     
 if selected == "Supply":
-
     with open('supply.md', 'r', encoding='utf-8-sig') as f:
         st.markdown(f.read())
+    
     
     st.markdown("---")
 
